@@ -6,9 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Typography from '@material-ui/core/Typography';
-
 import Graph from './Graph';
+import Card from './Card';
 
 const useStyles = makeStyles({
   metricContainer: {
@@ -20,16 +19,6 @@ const useStyles = makeStyles({
     width: '60%',
     display: 'flex',
     flexWrap: 'wrap'
-  },
-  eachMetric: {
-    width: '40%',
-    padding: '16px 24px 16px 16px',
-    color: 'rgba(0, 0, 0, 0.87)',
-    transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    backgroundColor: '#fff',
-    borderRadius: '4px',
-    marginBottom: '1rem',
-    marginRight: '1rem',
   },
   metricDropdownContainer: {
     width: '40%'
@@ -133,18 +122,11 @@ const Metrics = () => {
 
 
   return (
-    <div>
+    <div style={{scroll: 'auto'}}>
       <div className={classes.metricContainer}>
         <div className={classes.metricsList}>
           {multipleMetricDataList.map(metric => {
-            return <div className={classes.eachMetric} key={metric.metric}>
-              <Typography variant="h6" gutterBottom>
-                {metric.metric}
-              </Typography>
-              <Typography variant="h3" gutterBottom>
-                121.31
-              </Typography>
-            </div>
+            return <Card key={metric.metric} metricName={metric.metric} />
           })}
         </div>
         <div className={classes.metricDropdownContainer}>

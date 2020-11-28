@@ -30,7 +30,7 @@ const slice = createSlice({
       const { getMultipleMeasurements } = action.payload;
       state.multipleMetricDataList = getMultipleMeasurements;
     },
-    getMultipleMetricsDataApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+    getMultipleMetricsDataApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state
   }
 });
 
