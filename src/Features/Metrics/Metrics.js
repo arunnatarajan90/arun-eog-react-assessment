@@ -13,19 +13,19 @@ const useStyles = makeStyles({
   metricContainer: {
     display: 'flex',
     padding: '24px',
-    overflow: 'auto'
+    overflow: 'auto',
   },
   metricsList: {
     width: '60%',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   metricDropdownContainer: {
-    width: '40%'
+    width: '40%',
   },
   metricDropdown: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 });
 
 const client = createClient({
@@ -51,17 +51,17 @@ const multipleMetricQuery = `
   }
 `;
 
-const getMetricsList = (state) => {
+const getMetricsList = state => {
   const { metricsList } = state.metrics;
   return {
-    metricsList
+    metricsList,
   };
 };
 
-const getMultipleMetricData = (state) => {
+const getMultipleMetricData = state => {
   const { multipleMetricDataList } = state.metrics;
   return {
-    multipleMetricDataList
+    multipleMetricDataList,
   };
 };
 
@@ -75,10 +75,10 @@ export default () => {
 
 const Metrics = () => {
   const classes = useStyles();
-  
+
   const [metricSelected, setmetricSeleceted] = React.useState([]);
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setmetricSeleceted(event.target.value);
   };
 
@@ -87,29 +87,29 @@ const Metrics = () => {
   const { multipleMetricDataList } = useSelector(getMultipleMetricData);
 
   const [getMetricsResult] = useQuery({
-    query
+    query,
   });
   let input = [];
   metricSelected.forEach(metric => {
     input.push({
-      metricName: metric
-    })
+      metricName: metric,
+    });
   });
   let [getMultipleMetricResult] = useQuery({
     query: multipleMetricQuery,
     variables: {
-      input
-    }
+      input,
+    },
   });
   const { data, error } = getMetricsResult;
   const multiMetricData = getMultipleMetricResult.data;
-  const multipleMetricError  = getMultipleMetricResult.error;
+  const multipleMetricError = getMultipleMetricResult.error;
   useEffect(() => {
     if (error) {
       dispatch(actions.getMetricsApiErrorReceived({ error: error.message }));
       return;
     }
-    if(multipleMetricError) {
+    if (multipleMetricError) {
       dispatch(actions.getMultipleMetricsDataApiErrorReceived({ error: multipleMetricError.message }));
       return;
     }
@@ -117,39 +117,45 @@ const Metrics = () => {
     dispatch(actions.getMetricsListRecevied(data));
     if (!multiMetricData) return;
     dispatch(actions.getMultipleMetricsDataReceived(multiMetricData));
-    
   }, [dispatch, data, error, multiMetricData, multipleMetricError]);
 
-
   return (
-    <div style={{scroll: 'auto'}}>
+    <div style={{ scroll: 'auto' }}>
       <div className={classes.metricContainer}>
         <div className={classes.metricsList}>
           {multipleMetricDataList.map(metric => {
-            return <Card key={metric.metric} metricName={metric.metric} />
+            return <Card key={metric.metric} metricName={metric.metric} />;
           })}
         </div>
         <div className={classes.metricDropdownContainer}>
           <Select
             className={classes.metricDropdown}
-            labelId="demo-mutiple-name-label"
-            id="demo-mutiple-name"
             multiple
+            displayEmpty
             value={metricSelected}
             onChange={handleChange}
             input={<Input />}
+            renderValue={metricSelected => {
+              if (metricSelected.length === 0) {
+                return <em>Select...</em>;
+              }
+              return metricSelected.join(', ');
+            }}
           >
+            <MenuItem disabled value="">
+              <em>Select...</em>
+            </MenuItem>
             {metricsList.map(metric => {
-              return <MenuItem value={metric} key={metric}>{metric}</MenuItem>
+              return (
+                <MenuItem value={metric} key={metric}>
+                  {metric}
+                </MenuItem>
+              );
             })}
           </Select>
         </div>
       </div>
-      <div>
-        {multipleMetricDataList.length > 0 ? (
-          <Graph graphData={multipleMetricDataList} />
-        ) : null}
-      </div>
+      <div>{multipleMetricDataList.length > 0 ? <Graph graphData={multipleMetricDataList} /> : null}</div>
     </div>
-  )
-}
+  );
+};

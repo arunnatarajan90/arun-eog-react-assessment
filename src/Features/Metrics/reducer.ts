@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 
 export type getMetricsAction = {
-  getMetrics: []
+  getMetrics: [];
 };
 
 export type getMultipleMetricsDataAction = {
-  getMultipleMeasurements: []
+  getMultipleMeasurements: [];
 };
 
 export type ApiErrorAction = {
@@ -14,7 +14,7 @@ export type ApiErrorAction = {
 
 const initialState = {
   metricsList: [],
-  multipleMetricDataList: []
+  multipleMetricDataList: [],
 };
 
 const slice = createSlice({
@@ -30,8 +30,8 @@ const slice = createSlice({
       const { getMultipleMeasurements } = action.payload;
       state.multipleMetricDataList = getMultipleMeasurements;
     },
-    getMultipleMetricsDataApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state
-  }
+    getMultipleMetricsDataApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+  },
 });
 
 export const reducer = slice.reducer;

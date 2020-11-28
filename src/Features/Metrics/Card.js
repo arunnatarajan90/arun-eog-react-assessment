@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     borderRadius: '4px',
     marginBottom: '1rem',
     marginRight: '1rem',
-  }
+  },
 });
 
 const client = createClient({
@@ -31,19 +31,19 @@ const query = `
   }
 `;
 
-export default ({metricName}) => {
+export default ({ metricName }) => {
   const classes = useStyles();
   const [lastMetricData, setlastMetricData] = React.useState({});
 
   let [getLastData] = useQuery({
     query,
     variables: {
-      metricName
-    }
+      metricName,
+    },
   });
   const { data } = getLastData;
   useEffect(() => {
-    if(data) {
+    if (data) {
       setlastMetricData(data.getLastKnownMeasurement);
     }
   }, [data]);
