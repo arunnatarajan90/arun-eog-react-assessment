@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-import { Provider, createClient, useQuery } from 'urql';
+import { Provider, createClient } from 'urql';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
+import { gql } from '@apollo/client';
+import { useSubscription } from '@apollo/react-hooks';
 
 const useStyles = makeStyles({
   metricCard: {
@@ -20,9 +23,9 @@ const client = createClient({
   url: 'https://react.eogresources.com/graphql',
 });
 
-const query = `
-  query($metricName: String!) {
-    getLastKnownMeasurement(metricName: $metricName) {
+const newMeasurementsSub = gql`
+  subscription {
+    newMeasurement {
       metric
       at
       value
@@ -33,20 +36,18 @@ const query = `
 
 export default ({ metricName }) => {
   const classes = useStyles();
-  const [lastMetricData, setlastMetricData] = React.useState({});
+  const [metricData, setMetricData] = React.useState({});
 
-  let [getLastData] = useQuery({
-    query,
-    variables: {
-      metricName,
-    },
-  });
-  const { data } = getLastData;
+  const { loading, data } = useSubscription(newMeasurementsSub);
+
   useEffect(() => {
     if (data) {
-      setlastMetricData(data.getLastKnownMeasurement);
+      if (data.newMeasurement && data.newMeasurement.metric === metricName) {
+        setMetricData(data.newMeasurement);
+      }
     }
-  }, [data]);
+  }, [loading, data]);
+
   return (
     <Provider value={client}>
       <div className={classes.metricCard}>
@@ -54,7 +55,7 @@ export default ({ metricName }) => {
           {metricName}
         </Typography>
         <Typography variant="h3" gutterBottom>
-          {lastMetricData && lastMetricData.value}
+          {metricData && metricData.value}
         </Typography>
       </div>
     </Provider>
