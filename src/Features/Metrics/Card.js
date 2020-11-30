@@ -46,7 +46,7 @@ export default ({ metricName }) => {
         setMetricData(data.newMeasurement);
       }
     }
-  }, [loading, data]);
+  }, [loading, data, metricName]);
 
   return (
     <Provider value={client}>
